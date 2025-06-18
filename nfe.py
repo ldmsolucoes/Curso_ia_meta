@@ -55,14 +55,61 @@ def converter_para_utf8(caminho_arquivo):
         f.write(conteudo)
 
 def criar_base_conhecimento():
+    import os
+    import shutil
+    import pandas as pd
+    from langchain_huggingface import HuggingFaceEmbeddings
+    from langchain_chroma import Chroma
+
+    # Caminhos dos arquivos CSV
     pasta_csv = os.path.join(os.path.dirname(os.path.abspath(__file__)), "NFs_Extraidas")
     cabecalho_path = os.path.join(pasta_csv, "202401_NFs_Cabecalho.csv")
     itens_path = os.path.join(pasta_csv, "202401_NFs_Itens.csv")
+
+    # Remove o banco anterior, se existir
     if os.path.exists("./nfe_db"):
         shutil.rmtree("./nfe_db")
+
+    # Converte os arquivos para UTF-8 antes de ler
     converter_para_utf8(cabecalho_path)
     converter_para_utf8(itens_path)
-    print("Base de conhecimento criada (dummy).")
+
+    # Lê os CSVs já em UTF-8
+    df_cab = pd.read_csv(cabecalho_path, encoding='utf-8')
+    df_itens = pd.read_csv(itens_path, encoding='utf-8')
+
+    # Padroniza os nomes das colunas
+    df_cab.columns = [padronizar_nome_coluna(col) for col in df_cab.columns]
+    df_itens.columns = [padronizar_nome_coluna(col) for col in df_itens.columns]
+
+    documentos = []
+
+    for _, row in df_cab.iterrows():
+        chave = row['CHAVE_DE_ACESSO']
+        itens_nota = df_itens[df_itens['CHAVE_DE_ACESSO'] == chave]
+
+        itens_texto = ""
+        for _, item in itens_nota.iterrows():
+            itens_texto += (
+                f"\n  - Produto: {item.get('DESCRICAO_DO_PRODUTO_SERVICO', '')}, "
+                f"Qtd: {item.get('QUANTIDADE', '')}, "
+                f"Valor Total: {item.get('VALOR_TOTAL', '')}"
+            )
+
+        doc = (
+            f"Nota Fiscal: {row.get('NUMERO', '')}\n"
+            f"Chave de Acesso: {chave}\n"
+            f"Emitente: {row.get('RAZAO_SOCIAL_EMITENTE', '')}\n"
+            f"Valor Total: {row.get('VALOR_NOTA_FISCAL', '')}\n"
+            f"Itens:{itens_texto}\n"
+        )
+        documentos.append(doc)
+
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    vector_store = Chroma.from_texts(documentos, embeddings, persist_directory="./nfe_db")
+    # Não chame vector_store.persist()! O Chroma já salva automaticamente.
+
+    print(f"Base de conhecimento criada com {len(documentos)} notas fiscais.")
 
 # --- SEPARAÇÃO: funções para ler notas e itens, preservando lógica original ---
 
