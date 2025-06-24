@@ -2,7 +2,9 @@
 
 Rodar em powershell no modo administrador em um ambiente virtual, onde se encontra o arquivo nfe.py
 python nfe.py
-
+****** ATENÇÃO **********
+Instale os pacotes necessários atraves do arquivo requirements.txt
+*************************
 Para carregar o arquvo de notas(202401_NFs.zip), é necessário informar todo o caminho, com o exemplo abaixo:
 C:\LDM Solucoes\Docs\Curso IA - Agentes\python\NFs_zip\202401_NFs.zip
 
