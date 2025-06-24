@@ -1,21 +1,17 @@
-************************** PARA RODAR O PROJETO **********************************************
+********************************************** COMO RODAR O PROJETO **********************************************
 
-Rodar em powershell no modo administrador em um ambiente virtual, onde se encontra o arquivo nfe.py
-python nfe.py
-****** ATENÇÃO **********
-Instale os pacotes necessários atraves do arquivo requirements.txt
-*************************
-Para carregar o arquvo de notas(202401_NFs.zip), é necessário informar todo o caminho, com o exemplo abaixo:
-C:\LDM Solucoes\Docs\Curso IA - Agentes\python\NFs_zip\202401_NFs.zip
+1. Clonar o projeto do GitHub
+2. Criar um ambiente virtual (.venv) na raiz do projeto
+3. Instalar os pacotes via arquivo "requirements.txt" no ambiente virtual
+4. Criar uma pasta na raiz com o nome "NFs_zip" e colar o arquivo "202401_NFs.zip" nela
+5. Rodar o arquivo "nfe.py"
 
-Criar uma pasta no mesmo nível de onde se encontra o arquivo nfe.py
-Será  criada no mesmo nível da pasta "NFs_zip" uma outra pasta denominada "NFs_Extraidas" onde ficam os dois csvs
-Sequencia:
-1 descompacta o .zip
-2 cria o banco de dados vetorial e prepara os csvs para uso
-3 pesquisa as notas conforme indicado no prompt
-   3.1 os dados sobre as notas exibidas do prompts são dados válidos da base de csvs
-   3.1 a pesquisa por semântica da base sempre é chamada quando nada é encontrado(fallback)
+Aparecerá um menu com três opções:
 
-Boa Consulta!!!!
+Opção 1: Descompacta o .zip para a pasta "NFs_Extraidas" localizada na raiz do projeto
+Opção 2: Cria o banco de dados vetorial e prepara os CSVs para uso
+Opção 3: Pesquisa as notas conforme indicado no prompt
+   3.1 Os dados sobre as notas exibidas do prompts são dados válidos da base de csvs
+   3.1 A pesquisa por semântica da base sempre é chamada quando nada é encontrado(fallback)
 
+Boa Consulta!!!
